@@ -1,0 +1,11 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0d0d0d;
+  color: #e8e8e8;
+  min-height: 100vh;
+}
+
+a { color: #7c6af7; text-decoration: none; }
+a:hover { text-decoration: underline; }

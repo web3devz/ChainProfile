@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-echo "✅  Running ChainProfile Move tests"
-sui move test --path contracts "$@"
+echo "🧪 Running Move tests..."
+one move test --path contracts "$@"
+echo "✅ Tests passed."
