@@ -1,9 +1,7 @@
 module chain_profile::profile {
     use std::string::{Self, String};
-    use std::option::{Self, Option};
-    use one::object::{Self, UID};
-    use one::tx_context::{Self, TxContext};
-    use one::transfer;
+    use one::object::UID;
+    use one::tx_context::TxContext;
     use one::event;
 
     /// On-chain profile owned by a wallet address
@@ -17,7 +15,6 @@ module chain_profile::profile {
         website: String,
     }
 
-    /// Emitted on create and update
     public struct ProfileCreated has copy, drop {
         owner: address,
         handle: String,
@@ -32,7 +29,7 @@ module chain_profile::profile {
     const E_HANDLE_TOO_SHORT: u64 = 1;
 
     /// Create a new on-chain profile
-    public entry fun create_profile(
+    public fun create_profile(
         handle: vector<u8>,
         display_name: vector<u8>,
         bio: vector<u8>,
@@ -43,7 +40,7 @@ module chain_profile::profile {
         let handle_str = string::utf8(handle);
         assert!(string::length(&handle_str) >= 3, E_HANDLE_TOO_SHORT);
 
-        let sender = tx_context::sender(ctx);
+        let sender = ctx.sender();
         let profile = Profile {
             id: object::new(ctx),
             owner: sender,
@@ -58,8 +55,8 @@ module chain_profile::profile {
         transfer::transfer(profile, sender);
     }
 
-    /// Update mutable fields of an existing profile
-    public entry fun update_profile(
+    /// Update mutable fields — owner only
+    public fun update_profile(
         profile: &mut Profile,
         display_name: vector<u8>,
         bio: vector<u8>,
@@ -67,7 +64,7 @@ module chain_profile::profile {
         website: vector<u8>,
         ctx: &mut TxContext,
     ) {
-        assert!(profile.owner == tx_context::sender(ctx), E_NOT_OWNER);
+        assert!(profile.owner == ctx.sender(), E_NOT_OWNER);
         profile.display_name = string::utf8(display_name);
         profile.bio = string::utf8(bio);
         profile.avatar_url = string::utf8(avatar_url);

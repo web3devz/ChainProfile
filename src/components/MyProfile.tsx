@@ -19,16 +19,17 @@ export default function MyProfile() {
     options: { showContent: true },
   })
 
-  if (isPending) return <p className="status">Loading your profile...</p>
-  if (error) return <p className="error">Error: {error.message}</p>
+  if (isPending) return <div className="status-box">Loading your profile...</div>
+  if (error) return <div className="status-box error">Error: {error.message}</div>
 
   const profiles = data?.data ?? []
 
   if (profiles.length === 0) {
     return (
-      <div className="card">
-        <p>No on-chain profile found for this wallet.</p>
-        <p>Head to <strong>Create / Update</strong> to mint your identity.</p>
+      <div className="empty-state">
+        <div className="empty-icon">👤</div>
+        <h3>No profile found</h3>
+        <p>You don't have an on-chain profile yet. Head to <strong>Create / Update</strong> to mint your identity.</p>
       </div>
     )
   }
@@ -38,31 +39,57 @@ export default function MyProfile() {
       {profiles.map((obj) => {
         const content = obj.data?.content
         if (content?.dataType !== 'moveObject') return null
-        const fields = content.fields as unknown as ProfileFields
+        const f = content.fields as unknown as ProfileFields
         const objId = obj.data?.objectId ?? ''
 
         return (
-          <div key={objId} className="card profile-card">
-            {fields.avatar_url && (
-              <img src={fields.avatar_url} alt="avatar" className="avatar" />
-            )}
-            <h2>{fields.display_name || fields.handle}</h2>
-            <p className="handle">@{fields.handle}</p>
-            {fields.bio && <p className="bio">{fields.bio}</p>}
-            {fields.website && (
-              <a href={fields.website} target="_blank" rel="noreferrer" className="website">
-                {fields.website}
-              </a>
-            )}
-            <div className="meta">
-              <a href={`${EXPLORER_URL}/object/${objId}`} target="_blank" rel="noreferrer">
-                View Object on Explorer ↗
-              </a>
+          <div key={objId} className="profile-card">
+            <div className="profile-header">
+              {f.avatar_url ? (
+                <img src={f.avatar_url} alt="avatar" className="avatar" onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none'
+                }} />
+              ) : (
+                <div className="avatar-placeholder">{(f.display_name || f.handle)[0]?.toUpperCase()}</div>
+              )}
+              <div className="profile-identity">
+                <h2>{f.display_name || f.handle}</h2>
+                <span className="handle">@{f.handle}</span>
+              </div>
+            </div>
+
+            {f.bio && <p className="bio">{f.bio}</p>}
+
+            <div className="profile-links">
+              {f.website && (
+                <a href={f.website} target="_blank" rel="noreferrer" className="link-pill">
+                  🌐 {f.website.replace(/^https?:\/\//, '')}
+                </a>
+              )}
+            </div>
+
+            <div className="profile-meta">
+              <div className="meta-item">
+                <span className="meta-label">Owner</span>
+                <span className="meta-value mono">{f.owner.slice(0, 8)}...{f.owner.slice(-6)}</span>
+              </div>
+              <div className="meta-item">
+                <span className="meta-label">Object ID</span>
+                <a
+                  href={`${EXPLORER_URL}/object/${objId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="meta-value mono link"
+                >
+                  {objId.slice(0, 8)}...{objId.slice(-6)} ↗
+                </a>
+              </div>
             </div>
           </div>
         )
       })}
-      <button onClick={() => refetch()} className="refresh-btn">Refresh</button>
+
+      <button onClick={() => refetch()} className="btn-ghost">↻ Refresh</button>
     </div>
   )
 }

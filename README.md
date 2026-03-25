@@ -1,91 +1,167 @@
 # ChainProfile
 
-ChainProfile is a decentralized identity layer built on OneChain that enables users to create and own their on-chain profiles without relying on centralized platforms.
+> Decentralized identity layer built on OneChain — own your on-chain presence.
 
-Traditional digital identities are fragmented across multiple services and controlled by third parties. ChainProfile solves this by storing identity metadata — name, bio, avatar, website — directly on-chain, making it immutable, verifiable, and portable across Web3 ecosystems.
+ChainProfile lets users create and manage self-sovereign digital identities stored directly on the OneChain blockchain. No centralized platform, no third-party control. Your profile is a permanent, verifiable on-chain object owned by your wallet.
+
+---
+
+## The Problem
+
+Traditional digital identities are fragmented across dozens of platforms — each controlled by a corporation that can delete, censor, or monetize your data. There's no portability, no true ownership, and no verifiability across Web3 applications.
+
+## The Solution
+
+ChainProfile stores identity metadata (handle, display name, bio, avatar, website) as an owned object on OneChain. Once minted, your profile is:
+
+- **Permanent** — stored on-chain, not on a server
+- **Verifiable** — publicly readable by any dApp
+- **Portable** — usable across the entire OneChain ecosystem
+- **Owned** — lives in your wallet, not a database
+
+---
+
+## Live Deployment
+
+| | |
+|---|---|
+| Network | OneChain Testnet |
+| Package ID | `0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05` |
+| Module | `chain_profile::profile` |
+| Tx Digest | `3PhcC5kk3bSJtZSFAUrQveYtAT9cGHcZ2ogQ3DGjqddf` |
+| RPC | `https://rpc-testnet.onelabs.cc:443` |
+| Explorer | [View on OneChain Explorer](https://onescan.cc/testnet/packageDetail?packageId=0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05) |
+
+---
 
 ## Features
 
-- Create a permanent on-chain profile linked to your wallet
-- Update profile metadata anytime (display name, bio, avatar, website)
-- Profiles are owned NFT-like objects — fully transferable
-- Built on OneChain using the Move programming language
-- React + TypeScript frontend with OneChain wallet integration
+- Create a permanent on-chain profile linked to your wallet address
+- Update profile metadata anytime — display name, bio, avatar URL, website
+- Profiles are owned Move objects — transferable like any asset
+- Event emission on create and update for off-chain indexing
+- React + TypeScript frontend with OneChain wallet integration via `@mysten/dapp-kit`
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Smart Contract | Move (OneChain) |
+| Frontend | React 18 + TypeScript |
+| Wallet | `@mysten/dapp-kit` |
+| Data Fetching | `@tanstack/react-query` |
+| Build Tool | Vite |
+| Network | OneChain Testnet |
+
+---
 
 ## Project Structure
 
 ```
 ChainProfile/
 ├── contracts/
-│   ├── Move.toml
+│   ├── Move.toml               # Package config with OneChain dependencies
 │   └── sources/
-│       └── profile.move
+│       └── profile.move        # Core identity contract
 ├── src/
 │   ├── components/
-│   │   ├── CreateProfile.tsx
-│   │   └── MyProfile.tsx
-│   ├── config/network.ts
+│   │   ├── CreateProfile.tsx   # Mint a new on-chain profile
+│   │   └── MyProfile.tsx       # View owned profile objects
+│   ├── config/
+│   │   └── network.ts          # RPC + package ID config
 │   ├── App.tsx
 │   └── main.tsx
 ├── scripts/
-│   ├── build.sh
-│   ├── deploy.sh
-│   └── test.sh
+│   ├── build.sh                # Build Move package
+│   ├── deploy.sh               # Deploy to OneChain testnet
+│   └── test.sh                 # Run Move tests
 ├── .env.example
 └── package.json
 ```
+
+---
 
 ## Quick Start
 
 ### Prerequisites
 
 - Node.js 18+
-- OneChain CLI (`one`)
-- OneChain Wallet browser extension
+- [OneChain Wallet](https://chromewebstore.google.com) browser extension
+- OneChain CLI (`one`) — see install steps below
 
 ### Install OneChain CLI
 
 ```bash
-cargo install --locked --git https://github.com/one-chain-labs/onechain.git one_chain --features tracing
-mv ~/.cargo/bin/one_chain ~/.cargo/bin/one
+# Download pre-built binary (macOS arm64)
+curl -L https://github.com/one-chain-labs/onechain/releases/download/v1.1.1/one-mainnet-v1.1.1-macos-arm64.tgz -o one.tgz
+tar -xzf one.tgz && mv one ~/.cargo/bin/one
+
+# Configure testnet
+one client new-env --alias testnet --rpc https://rpc-testnet.onelabs.cc:443
+one client switch --env testnet
 ```
 
-### Setup
+### Run the Frontend
 
 ```bash
 npm install
 cp .env.example .env
-```
-
-### Build & Deploy Contract
-
-```bash
-./scripts/build.sh
-./scripts/deploy.sh
-# Copy the Package ID output into your .env as VITE_PACKAGE_ID
-```
-
-### Run Frontend
-
-```bash
 npm run dev
 # Open http://localhost:3000
 ```
 
-## Deployment
+### Deploy Your Own Contract
 
-- Network: OneChain Testnet
-- RPC: `https://rpc-testnet.onelabs.cc:443`
-- Explorer: `https://explorer.onelabs.cc`
-- Package ID: `0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05`
-- Tx Digest: `3PhcC5kk3bSJtZSFAUrQveYtAT9cGHcZ2ogQ3DGjqddf`
+```bash
+./scripts/build.sh
+./scripts/deploy.sh
+# Copy the Package ID into .env as VITE_PACKAGE_ID
+```
+
+---
+
+## Smart Contract
+
+The `profile` module exposes two entry functions:
+
+```move
+// Create a new on-chain profile
+public entry fun create_profile(
+    handle: vector<u8>,
+    display_name: vector<u8>,
+    bio: vector<u8>,
+    avatar_url: vector<u8>,
+    website: vector<u8>,
+    ctx: &mut TxContext,
+)
+
+// Update an existing profile (owner only)
+public entry fun update_profile(
+    profile: &mut Profile,
+    display_name: vector<u8>,
+    bio: vector<u8>,
+    avatar_url: vector<u8>,
+    website: vector<u8>,
+    ctx: &mut TxContext,
+)
+```
+
+---
 
 ## Progress Checklist
 
-- [x] Move smart contract — `create_profile` and `update_profile` entry functions
-- [x] OneChain testnet deployment scripts (`build.sh`, `deploy.sh`, `test.sh`)
-- [x] React + TypeScript frontend with `@mysten/dapp-kit` wallet integration
-- [x] Create Profile UI — form to mint on-chain identity
-- [x] My Profile UI — fetch and display owned profile objects
-- [x] Network config pointing to OneChain testnet RPC
-- [x] Live contract deployed on OneChain testnet — Package ID: `0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05`
+- [x] Move smart contract with `create_profile` and `update_profile`
+- [x] Ownership validation — only profile owner can update
+- [x] Event emission on create and update for indexing
+- [x] OneChain testnet deployment scripts
+- [x] React + TypeScript frontend with wallet integration
+- [x] Create Profile UI and My Profile viewer
+- [x] Live contract deployed on OneChain testnet
+
+---
+
+## License
+
+MIT
