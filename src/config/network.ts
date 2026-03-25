@@ -1,4 +1,8 @@
 export const NETWORK = 'testnet'
 export const RPC_URL = 'https://rpc-testnet.onelabs.cc:443'
 export const PACKAGE_ID = import.meta.env.VITE_PACKAGE_ID as string
-export const EXPLORER_URL = 'https://explorer.onelabs.cc'
+export const EXPLORER_URL = 'https://onescan.cc/testnet'
+
+// Build explorer links
+export const objectUrl = (id: string) => `${EXPLORER_URL}/objectDetails?address=${id}`
+export const txUrl = (digest: string) => `${EXPLORER_URL}/transactionDetail?digest=${digest}`

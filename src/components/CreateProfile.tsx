@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClientQuery } from '@mysten/dapp-kit'
 import { Transaction } from '@mysten/sui/transactions'
-import { PACKAGE_ID, EXPLORER_URL } from '../config/network'
+import { PACKAGE_ID, objectUrl, txUrl } from '../config/network'
 
 interface ProfileFields {
   handle: string
@@ -177,7 +177,7 @@ export default function CreateProfile({ onSuccess }: Props) {
       {txDigest && (
         <div className="tx-success">
           <span>✅ {isUpdate ? 'Profile updated' : 'Profile created'} on-chain</span>
-          <a href={`${EXPLORER_URL}/txblock/${txDigest}`} target="_blank" rel="noreferrer">
+          <a href={txUrl(txDigest)} target="_blank" rel="noreferrer">
             View transaction ↗
           </a>
         </div>

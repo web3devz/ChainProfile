@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSuiClient } from '@mysten/dapp-kit'
-import { PACKAGE_ID, EXPLORER_URL } from '../config/network'
+import { PACKAGE_ID, objectUrl } from '../config/network'
 
 interface ProfileFields {
   handle: string
@@ -100,7 +100,7 @@ export default function ExploreProfiles() {
             <div className="meta-item">
               <span className="meta-label">Object ID</span>
               <a
-                href={`${EXPLORER_URL}/object/${objectId}`}
+                href={objectUrl(objectId)}
                 target="_blank"
                 rel="noreferrer"
                 className="meta-value mono link"
