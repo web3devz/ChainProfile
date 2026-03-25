@@ -5,7 +5,7 @@ upgrade_policy = "compatible"
 
 [addresses]
 chain_profile = "0x0"
+one = "0x2"
 
 [dependencies]
-MoveStdlib = { git = "https://github.com/MystenLabs/sui.git", subdir = "external-crates/move-stdlib", rev = "testnet" }
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
+OneChain = { git = "https://github.com/one-chain-labs/onechain.git", subdir = "crates/one-framework/packages/one-framework", rev = "testnet" }
