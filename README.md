@@ -1,167 +1,137 @@
-# ChainProfile
+# ChainProfile 👤
 
-> Decentralized identity layer built on OneChain — own your on-chain presence.
+**Decentralized Identity Layer on OneChain — Own Your On-Chain Presence**
 
-ChainProfile lets users create and manage self-sovereign digital identities stored directly on the OneChain blockchain. No centralized platform, no third-party control. Your profile is a permanent, verifiable on-chain object owned by your wallet.
+ChainProfile enables users to create and manage self-sovereign digital identities directly on the blockchain. No centralized control, no censorship, and no data exploitation — your identity is fully owned by your wallet.
 
----
+## 🌐 Overview
 
-## The Problem
+Digital identity today is fragmented, platform-dependent, and controlled by centralized entities. Users lack ownership, portability, and trustless verification across platforms.
 
-Traditional digital identities are fragmented across dozens of platforms — each controlled by a corporation that can delete, censor, or monetize your data. There's no portability, no true ownership, and no verifiability across Web3 applications.
+ChainProfile solves this by introducing a **fully on-chain identity system** built on OneChain. Each profile is a Move object stored on-chain, making it:
 
-## The Solution
+* **Permanent** → cannot be deleted by any third party
+* **Verifiable** → accessible and readable by any dApp
+* **Portable** → usable across the entire ecosystem
+* **User-Owned** → controlled entirely by your wallet
 
-ChainProfile stores identity metadata (handle, display name, bio, avatar, website) as an owned object on OneChain. Once minted, your profile is:
+This creates a foundational identity layer for Web3 applications.
 
-- **Permanent** — stored on-chain, not on a server
-- **Verifiable** — publicly readable by any dApp
-- **Portable** — usable across the entire OneChain ecosystem
-- **Owned** — lives in your wallet, not a database
+## ❗ The Problem
 
----
+* Identity is scattered across multiple platforms
+* Users don’t truly own their profiles
+* Platforms can censor, delete, or monetize user data
+* No unified identity layer for Web3
+* Difficult to verify authenticity across applications
 
-## Live Deployment
+## 💡 The Solution
 
-| | |
-|---|---|
-| Network | OneChain Testnet |
-| Package ID | `0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05` |
-| Module | `chain_profile::profile` |
-| Tx Digest | `3PhcC5kk3bSJtZSFAUrQveYtAT9cGHcZ2ogQ3DGjqddf` |
-| RPC | `https://rpc-testnet.onelabs.cc:443` |
-| Explorer | [View on OneChain Explorer](https://onescan.cc/testnet/packageDetail?packageId=0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05) |
+ChainProfile stores identity metadata (handle, display name, bio, avatar, website) as an **owned on-chain object**.
 
----
+Once created, your profile becomes a **permanent digital identity primitive** that any application can integrate with — without relying on centralized APIs.
 
-## Features
+## ✨ Key Features
 
-- Create a permanent on-chain profile linked to your wallet address
-- Update profile metadata anytime — display name, bio, avatar URL, website
-- Profiles are owned Move objects — transferable like any asset
-- Event emission on create and update for off-chain indexing
-- React + TypeScript frontend with OneChain wallet integration via `@mysten/dapp-kit`
+* **On-Chain Identity Creation**
+  Mint a permanent profile directly tied to your wallet address
 
----
+* **Editable Metadata**
+  Update display name, bio, avatar, and website anytime
 
-## Tech Stack
+* **Ownership by Design**
+  Profiles are Move objects — fully owned and transferable
 
-| Layer | Technology |
-|---|---|
-| Smart Contract | Move (OneChain) |
-| Frontend | React 18 + TypeScript |
-| Wallet | `@mysten/dapp-kit` |
-| Data Fetching | `@tanstack/react-query` |
-| Build Tool | Vite |
-| Network | OneChain Testnet |
+* **Event-Based Indexing**
+  Emits events on create/update for efficient off-chain indexing
 
----
+* **Composable Identity Layer**
+  Can be integrated into any dApp for authentication and reputation
 
-## Project Structure
+* **Seamless Frontend Experience**
+  Built with React + TypeScript and OneChain wallet integration
 
-```
-ChainProfile/
-├── contracts/
-│   ├── Move.toml               # Package config with OneChain dependencies
-│   └── sources/
-│       └── profile.move        # Core identity contract
-├── src/
-│   ├── components/
-│   │   ├── CreateProfile.tsx   # Mint a new on-chain profile
-│   │   └── MyProfile.tsx       # View owned profile objects
-│   ├── config/
-│   │   └── network.ts          # RPC + package ID config
-│   ├── App.tsx
-│   └── main.tsx
-├── scripts/
-│   ├── build.sh                # Build Move package
-│   ├── deploy.sh               # Deploy to OneChain testnet
-│   └── test.sh                 # Run Move tests
-├── .env.example
-└── package.json
-```
+## ⚙️ How It Works
 
----
+1. User connects wallet via frontend
+2. User submits profile details (handle, bio, etc.)
+3. Smart contract mints a profile object on-chain
+4. Profile is stored under user ownership
+5. Updates are performed via authenticated transactions
+6. Events are emitted for indexing and UI updates
 
-## Quick Start
+## 📦 Deployed Contract
 
-### Prerequisites
+* **Network:** OneChain Testnet
+* **Package ID:**
+  `0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05`
+* **Module:** `chain_profile::profile`
+* **Transaction Digest:**
+  `3PhcC5kk3bSJtZSFAUrQveYtAT9cGHcZ2ogQ3DGjqddf`
+* **RPC Endpoint:**
+  [https://rpc-testnet.onelabs.cc:443](https://rpc-testnet.onelabs.cc:443)
+* **Explorer:**
+  [https://onescan.cc/testnet/packageDetail?packageId=0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05](https://onescan.cc/testnet/packageDetail?packageId=0xb430d36e5a41efb283d4c700903bafcf1877ee0647e5b76484bf019272ccaa05)
 
-- Node.js 18+
-- [OneChain Wallet](https://chromewebstore.google.com) browser extension
-- OneChain CLI (`one`) — see install steps below
+## 🛠 Tech Stack
 
-### Install OneChain CLI
+**Smart Contract**
 
-```bash
-# Download pre-built binary (macOS arm64)
-curl -L https://github.com/one-chain-labs/onechain/releases/download/v1.1.1/one-mainnet-v1.1.1-macos-arm64.tgz -o one.tgz
-tar -xzf one.tgz && mv one ~/.cargo/bin/one
+* Move (OneChain)
 
-# Configure testnet
-one client new-env --alias testnet --rpc https://rpc-testnet.onelabs.cc:443
-one client switch --env testnet
-```
+**Frontend**
 
-### Run the Frontend
+* React 18
+* TypeScript
+* Vite
 
-```bash
-npm install
-cp .env.example .env
-npm run dev
-# Open http://localhost:3000
-```
+**Wallet Integration**
 
-### Deploy Your Own Contract
+* @mysten/dapp-kit
 
-```bash
-./scripts/build.sh
-./scripts/deploy.sh
-# Copy the Package ID into .env as VITE_PACKAGE_ID
-```
+**Data Layer**
 
----
+* @tanstack/react-query
 
-## Smart Contract
+**Network**
 
-The `profile` module exposes two entry functions:
+* OneChain Testnet
 
-```move
-// Create a new on-chain profile
-public entry fun create_profile(
-    handle: vector<u8>,
-    display_name: vector<u8>,
-    bio: vector<u8>,
-    avatar_url: vector<u8>,
-    website: vector<u8>,
-    ctx: &mut TxContext,
-)
+## 🔍 Use Cases
 
-// Update an existing profile (owner only)
-public entry fun update_profile(
-    profile: &mut Profile,
-    display_name: vector<u8>,
-    bio: vector<u8>,
-    avatar_url: vector<u8>,
-    website: vector<u8>,
-    ctx: &mut TxContext,
-)
-```
+* **Decentralized Social Profiles**
+  Replace centralized usernames and accounts
 
----
+* **Web3 Authentication Layer**
+  Use profiles instead of email/password systems
 
-## Progress Checklist
+* **Reputation Systems**
+  Attach credibility, achievements, and activity to identity
 
-- [x] Move smart contract with `create_profile` and `update_profile`
-- [x] Ownership validation — only profile owner can update
-- [x] Event emission on create and update for indexing
-- [x] OneChain testnet deployment scripts
-- [x] React + TypeScript frontend with wallet integration
-- [x] Create Profile UI and My Profile viewer
-- [x] Live contract deployed on OneChain testnet
+* **DAO Membership Identity**
+  Represent roles and participation on-chain
 
----
+* **Cross-dApp Identity**
+  One identity usable across multiple applications
 
-## License
+## 🚀 Why ChainProfile Stands Out
 
-MIT
+* **Self-Sovereign Identity** — no platform dependency
+* **Fully On-Chain** — no backend required
+* **Composable & Extensible** — plug into any Web3 app
+* **Censorship Resistant** — no central authority
+* **Developer-Friendly** — simple integration via Move + events
+* **Hackathon-Ready Impact** — foundational Web3 primitive
+
+## 🔮 Future Improvements
+
+* Profile verification badges
+* Social graph integration (followers, connections)
+* Cross-chain identity support
+* ENS-like human-readable naming system
+* Privacy layers for selective data visibility
+* Rich metadata extensions (skills, NFTs, credentials)
+
+## 📄 License
+
+MIT License
